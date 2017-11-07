@@ -1,0 +1,335 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Implementing Dokidoki</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/geeny.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="https://code.cdn.mozilla.net/fonts/fira.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-background="images/logo.svg" data-background-size="15%" data-background-position="30px">
+	  <h1>A Javascript App With Geeny</h1>
+          <p>
+            <small>
+	      Diego Echeverri
+	      / <a href="http://twitter.com/diegoeche">@diegoeche</a>
+	      / <a href="mailto:diego@geeny.io">diego@geeny.io</a>
+	    </small>
+          </p>
+        </section>
+
+        <section data-background="images/logo.svg" data-background-size="15%" data-background-position="30px">
+	  <h1><strike>A Javascript App With Geeny</strike></h1>
+
+	  <h1>An App With Geeny</h1>
+          <p>
+            <small>
+	      Diego Echeverri
+	      / <a href="http://twitter.com/diegoeche">@diegoeche</a>
+	      / <a href="mailto:diego@geeny.io">diego@geeny.io</a>
+	    </small>
+          </p>
+        </section>
+
+        <section>
+	  <section>
+	    <h1>Introduction</h1>
+	    <small>Hello!</small>
+	  </section>
+
+	  <section
+	    data-background="images/logo.svg"
+	    data-background-size="70%">
+	  </section>
+
+	  <section>
+	    <h1>The Future</h1>
+	  </section>
+
+	  <section
+	    data-background="images/future-good.gif"
+	    data-background-size="70%">
+	  </section>
+
+	  <section>
+	    <h1>Why Would you use Geeny?</h1>
+	  </section>
+
+	  <section
+	    data-background="images/geeny-general.png"
+	    data-background-size="80%"
+	    >
+	  </section>
+
+	  <section
+	    data-background="images/geeny-general-formula.png"
+	    data-background-size="80%"
+	    >
+	  </section>
+
+	  <section>
+	    <h1>Apps with IoT should be EASY</h1>
+	  </section>
+
+	  <section>
+	    <h1>Left side is a Time Sink!</h1>
+	  </section>
+	</section>
+
+	<section>
+	  <section data-background="images/rat.jpg" data-background-size="70%">
+	  </section>
+	  <section>
+	    <h1>RAT</h1>
+	    <ul>
+	      <il><b>R</b>iskiest</il>
+	      <il><b>A</b>ssumption</il>
+	      <il><b>T</b>est<il>
+	    </ul>
+	    <p>
+	      <small>
+		<a href="https://hackernoon.com/the-mvp-is-dead-long-live-the-rat-233d5d16ab02">
+		  The MVP is Dead, Long Live the Rat
+		</a>
+	      </small>
+	    </p>
+	  </section>
+
+	  <section>
+	    <h1>Geeny's Testeable Assumption</h1>
+	    <quote>
+	      How would a multi-platform fitness tracker work?
+	    </quote>
+	    <p>
+	      <small>Is it Easier?</small>
+	    </p>
+	  </section>
+
+	  <section>
+	    <h1>Concept</h1>
+	  </section>
+
+	  <section
+	    data-background="images/marketplace-detail.png"
+	    data-background-size="80%">
+	  </section>
+
+	  <section
+	    data-background="images/logged-in.png"
+	    data-background-size="80%"
+	    >
+	  </section>
+
+	  <section
+	    data-background="images/dokidoki-data.png"
+	    data-background-size="80%"
+	    >
+	  </section>
+	</section>
+
+	<section>
+	  <section>
+	    <h1>Implementation</h1>
+	  </section>
+
+	  <section
+	    data-background="images/getdata-flow.png"
+	    data-background-size="50%"
+	    >
+	  </section>
+
+	  <section
+	    data-background="images/phoenix.png"
+	    data-background-color="white"
+	    data-background-size="40%"
+	    >
+	  </section>
+
+	  <section>
+	    <h1>Fetch Data</h1>
+	    <pre>
+	    <code>
+  # When iterator found, process all the messages from that iterator
+  def tick!(%{current_iterator: iterators}) do
+    next_iterators =
+      iterators
+      |> Enum.map(fn (iterator) ->
+        messages_response = get_garmin_messages(iterator)
+        Logger.info("Starting to import batch of messages for shard #{iterator}")
+        import_heart_beat_data!(messages_response.messages)
+        Logger.info("Finished to import batch of messages for shard #{iterator}")
+        messages_response.next_iterator
+      end)
+    {:noreply, %{current_iterator: next_iterators}}
+  end
+  def tick!(_) do
+    iterator = get_garmin_iterator()
+    {:noreply, %{current_iterator: iterator}}
+  end
+	    </code>
+	    </pre>
+	  </section>
+
+	  <section>
+	    <h1>Fetch Data (2)</h1>
+	    <pre>
+	    <code>
+  def get_garmin_iterator() do
+    app = app_id()
+    message = message_type()
+    Geeny.AppBrokerClient.describe(app, message)
+    |> Enum.map(fn(shard_id) ->
+      Geeny.AppBrokerClient.get_iterator(app, message, shard_id)
+    end)
+  end
+
+  def get_garmin_messages(iterator) do
+    result = Geeny.AppBrokerClient.get_messages(app_id(), message_type(), iterator)
+    %{messages: result.messages, next_iterator: result.next_iterator}
+  end
+	    </code>
+	    </pre>
+	  </section>
+
+	  <section>
+	    <h2>Consuming Beat Data (JS)</h2>
+	    <pre>
+	    <code>
+import { doFetchCall } from '../utils/fetch';
+
+//eslint-disable-next-line
+export function getBeats(from, to) {
+  const origin = window.location.origin;
+  const fromSec = from.unix();
+  const toSec = to ? to.unix() : '';
+
+  return doFetchCall(`${origin}/api/beats?from=${fromSec}${to ? `&to=${toSec}` : ''}`);
+}
+	    </code>
+	    </pre>
+	  </section>
+
+	  <section
+	    data-background="images/serve-app.png"
+	    data-background-size="50%"
+	    >
+	  </section>
+
+	  <section
+	    data-background="images/docker.png"
+	    data-background-size="40%"
+	    >
+	  </section>
+
+	  <section>
+	    <h2>Dockerfile</h2>
+	    <pre>
+	    <code>
+FROM msaraiva/elixir-gcc
+MAINTAINER You
+
+COPY . /build
+
+ENV MIX_ENV prod
+ENV HTTP_PORT 80
+
+WORKDIR /build
+
+RUN mix deps.get --only prod
+
+RUN mix compile
+
+EXPOSE 80
+
+CMD mix phoenix.digest && mix phoenix.server
+	    </code>
+	    </pre>
+	  </section>
+
+	  <section>
+	    <h1>Your Stack Doesn't Matter!</h1>
+	    <small>If you can dockerize it</small>
+	  </section>
+	</section>
+
+	<section>
+	  <section>
+	    <h1>Is it Worth it?</h1>
+	  </section>
+
+	  <section
+	    data-background="images/live-update.png"
+	    data-background-size="50%"
+	    >
+	  </section>
+
+	  <section>
+	    <h1>Short Answer</h1>
+	    <h2>YES!</h2>
+	  </section>
+
+	  <section>
+	    <h1>A different flow for other APIs</h1>
+	  </section>
+
+	  <section>
+	    <h1>Other devices won't provide an API</h1>
+	    <h3>(BLE, Sigfox, LoRa)</h3>
+	  </section>
+	</section>
+
+	<section>
+	  <section>
+	    <h1>In Summary</h1>
+	  </section>
+
+	  <section>
+	    <h1>IoT connectivity is something App devs don't want to deal with</h1>
+	  </section>
+
+	  <section>
+	    <h1>Geeny will save time accessing IoT devices</h1>
+	  </section>
+	</section>
+
+	<section>
+	  <section>
+	    <h1>The End</h1>
+	    <h2>Thank you</h2>
+	  </section>
+	</section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
+</html>
