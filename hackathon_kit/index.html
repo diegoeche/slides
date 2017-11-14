@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hackathon is Here!</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/geeny.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link rel="stylesheet" href="https://code.cdn.mozilla.net/fonts/fira.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <div class="reveal">
+      <div class="slides">
+        <section data-background="images/logo.svg" data-background-size="15%" data-background-position="30px">
+	  <h1>The Hackathon is Here! </h1>
+	  <small class="fragment">finally! :-)</small>
+        </section>
+
+	<section>
+	  <h1>Why Making a Hackathon?</h1>
+        </section>
+
+	<section>
+	  <h1 class="fragment">Creativity</h1>
+	  <h1 class="fragment">Fun</h1>
+	  <h1 class="fragment">Collaboration</h1>
+        </section>
+
+	<section>
+	  <h1>4 Teams!</h1>
+        </section>
+
+	<section>
+	  <h1>Brobdingnagian Bunch</h1>
+        </section>
+
+	<section>
+	  <h1>U name it</h1>
+        </section>
+
+	<section>
+	  <h1>avakai</h1>
+        </section>
+
+	<section>
+	  <h1>East Side</h1>
+        </section>
+
+	<section>
+	  <h1>ONE WINNER</h1>
+        </section>
+
+	<section>
+	  <h1>Criteria for winning?</h1>
+	  <h2 class="fragment">Creativity</h2>
+	  <h2 class="fragment">Pitch</h2>
+	  <h2 class="fragment">Demo</h2>
+	  <small class="fragment">TIP: Increase your chances by not making a console/terminal app</small>
+	</section>
+
+	<section>
+	  <h1>TIPS</h1>
+	  <h2> (AKA: Why the Hackathon Kit?) </h2>
+	</section>
+
+	<section>
+	  <h1>It is a DEMO. It is NOT a real app</h1>
+	</section>
+
+	<section>
+	  <h1>Ignore the Sign-In/Connect flow</h1>
+	  <h2>Use Your DEV user</h2>
+	</section>
+
+	<section>
+	  <h1>Forget about persistance/concurrency</h1>
+	  <h2>Use in-memory data-structures</h2>
+	  <pre class="fragment">
+	  <code>
+# Yes, Global Variables
+const MAX_LENGTH = 100
+let log = []
+let develcoMessages = []
+let consumedMessages = []
+
+app.get('/msgs', function (req, res) {
+  if (develcoMessages.length == 0) {
+    res.send("No Messages Received")
+  } else {
+    let messages = develcoMessages.slice(0).reverse() // Clone the log to avoid global state
+    // (... keep hacking)
+  }
+})
+	  </code>
+	  </pre>
+	</section>
+
+	<section>
+	  <h1>TL;DR</h1>
+	</section>
+
+	<section>
+	  <h1>If you want a water heater...</h1>
+	</section>
+
+	<section data-background="images/water-heater.jpg" data-background-size=60%>
+        </section>
+
+	<section>
+	  <h1>If you want a grill...</h1>
+	</section>
+
+	<section data-background="images/backyard-grill.jpg" data-background-size=50%>
+        </section>
+
+	<section>
+	  <h1>UserName/Password (Ask me)</h1>
+	</section>
+
+	<section>
+	  <h1>Join #geeny-hackathon in Slack</h1>
+	</section>
+
+	<section>
+	  <h1>Profit!</h1>
+	</section>
+
+
+	<section data-background="images/lets-get-it-on.gif" data-background-size=50%>
+        </section>
+
+      </div>
+    </div>
+
+    <script>
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
+</html>
